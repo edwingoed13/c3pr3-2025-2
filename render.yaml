@@ -1,5 +1,4 @@
 services:
-  # Backend Service
   - type: web
     name: cepreuna-backend
     env: python
@@ -14,7 +13,6 @@ services:
         fromDatabase: cepreuna_pass
     plan: free
 
-  # Frontend Service
   - type: web
     name: cepreuna-frontend
     env: node
