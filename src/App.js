@@ -206,17 +206,18 @@ const SedeTable = ({ data: tableData, title }) => (
 
 // Componente principal
 const StudentDashboard = () => {
+  // ✅ Solución: usar rutas relativas en producción
   const API_BASE_URL =
     process.env.REACT_APP_API_URL ||
     (process.env.NODE_ENV === "production"
-      ? "https://cepreuna-backend.onrender.com"
+      ? ""  // ✅ Ruta relativa - usa el mismo dominio
       : "http://localhost:8000");
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
-  const [selectedView, setSelectedView] = useState("todos"); // Vista predeterminada: Total por Área
+  const [selectedView, setSelectedView] = useState("todos");
   const [selectedSede, setSelectedSede] = useState("");
 
   // Estados para la funcionalidad de descarga de fichas
