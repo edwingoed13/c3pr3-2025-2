@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import httpx
 import asyncio
 import os
@@ -36,7 +38,6 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://127.0.0.1:8001",
         "https://*.onrender.com",
-        "https://cepreuna-frontend.onrender.com",  # 🔥 Tu dominio específico
         # Agrega aquí tu dominio personalizado si tienes
     ],
     allow_credentials=True,
@@ -478,11 +479,11 @@ def is_cache_valid() -> bool:
     time_diff = (datetime.now() - cache_timestamp).total_seconds()
     return time_diff < CACHE_DURATION
 
-# 🔥 ENDPOINTS
+# 🔥 ENDPOINTS DE LA API
 
-@app.get("/")
-async def root():
-    """Endpoint de prueba"""
+@app.get("/api")
+async def root_api():
+    """Endpoint de prueba para la API"""
     return {"message": "API CEPREUNA funcionando correctamente"}
 
 # 🔥 NUEVO: Health check para UptimeRobot
@@ -667,6 +668,54 @@ async def get_status():
             "base_url": BASE_URL
         }
     }
+
+# 🔥 SERVIR ARCHIVOS ESTÁTICOS DE REACT
+# Verificar si existe la carpeta build
+if os.path.exists("build"):
+    # Servir archivos estáticos
+    app.mount("/static", StaticFiles(directory="build/static"), name="static")
+    
+    # Servir archivos de la raíz (favicon, manifest, etc.)
+    @app.get("/favicon.ico")
+    async def favicon():
+        return FileResponse("build/favicon.ico")
+    
+    @app.get("/manifest.json")
+    async def manifest():
+        return FileResponse("build/manifest.json")
+    
+    @app.get("/robots.txt")
+    async def robots():
+        return FileResponse("build/robots.txt")
+    
+    # Servir la aplicación React para todas las demás rutas
+    @app.get("/{full_path:path}")
+    async def serve_react_app(full_path: str):
+        """Servir la aplicación React"""
+        # Si es una ruta de API, no interceptar
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API endpoint not found")
+        
+        # Verificar si existe el archivo
+        file_path = os.path.join("build", full_path)
+        if os.path.isfile(file_path):
+            return FileResponse(file_path)
+        
+        # Si no existe, servir index.html (para routing de React)
+        return FileResponse("build/index.html")
+    
+    # Root endpoint para servir React
+    @app.get("/")
+    async def root():
+        """Servir la página principal de React"""
+        return FileResponse("build/index.html")
+else:
+    # Si no existe build, servir mensaje de error
+    @app.get("/")
+    async def root():
+        return {"message": "React app no compilado. Ejecuta 'npm run build'"}
+    
+    logger.warning("❌ Carpeta 'build' no encontrada. El frontend no estará disponible.")
 
 # 🔥 IMPORTANTE: Puerto dinámico para Render
 if __name__ == "__main__":
