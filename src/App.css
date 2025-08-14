@@ -1,0 +1,973 @@
+/* Dashboard.css - Colores institucionales: Azul (#16285c), Naranja (#df5e1e), Verde (#5fa65a) */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  /* Nuevo degradado de fondo principal usando el azul institucional */
+  background: linear-gradient(135deg, #16285c 0%, #293d7c 100%);
+  min-height: 100vh;
+}
+
+/* Container principal */
+.dashboard-container {
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #16285c 0%, #293d7c 100%);
+}
+
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.title-container {
+  position: relative;
+}
+
+.dashboard-title {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.title-accent {
+  font-size: 2.8rem;
+  background: linear-gradient(45deg, #df5e1e, #5fa65a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+}
+
+.title-cycle {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.8);
+  font-weight: 400;
+}
+
+.title-underline {
+  height: 3px;
+  background: linear-gradient(90deg, #df5e1e, #5fa65a, #16285c);
+  margin-top: 10px;
+  border-radius: 2px;
+  animation: slideInLeft 1s ease-out 0.5s both;
+}
+
+.pulse-glow {
+  animation: glow 2s infinite;
+}
+
+.modern-btn {
+  background: linear-gradient(45deg, #5fa65a, #4a884a);
+  border: none;
+  box-shadow: 0 4px 15px rgba(95,166,90,0.4);
+}
+
+.modern-btn:hover:not(:disabled) {
+  background: linear-gradient(45deg, #4a884a, #3d7a3d);
+  box-shadow: 0 8px 25px rgba(95,166,90,0.6);
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s ease-out 0.2s both;
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.dashboard-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.last-update {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+}
+
+/* Botones */
+.btn-update {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #5fa65a; /* Verde institucional */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.btn-update:hover:not(:disabled) {
+  background: #4a884a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-update:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo para las tarjetas con degradado */
+.gradient-card {
+  background: linear-gradient(135deg, #2d4380 0%, #16285c 100%);
+  color: white;
+}
+
+.gradient-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos de elementos dentro de la tarjeta con degradado */
+.gradient-card .chart-title {
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 1.5rem;
+}
+
+.gradient-card .data-table {
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* FIX para encabezado de tabla legible */
+.gradient-card .data-table .table-header th {
+  background: #F9FAFB; /* Fondo muy claro para legibilidad */
+  color: #16285c; /* Azul oscuro institucional */
+  border-color: #E5E7EB;
+}
+
+.gradient-card .data-table .table-body tr {
+  background-color: transparent;
+}
+
+.gradient-card .data-table .table-body tr:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.gradient-card .table-cell-primary,
+.gradient-card .table-cell-secondary,
+.gradient-card .table-cell-number {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.gradient-card .table-cell-number {
+    color: #fcfcfc; /* Verde institucional para los números */
+}
+
+/* Nuevo contenedor para las tarjetas de resumen */
+.dashboard-summary {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* Total de estudiantes (Naranja) */
+.total-students-card {
+  background: linear-gradient(135deg, #df5e1e 0%, #ca551a 100%);
+  color: white;
+}
+
+.total-students-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.total-students-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.9;
+}
+
+.total-students-label {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.total-students-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Estilos para la tarjeta del selector de vista (Azul Oscuro) */
+.styled-selector-card {
+  background: linear-gradient(135deg, #16285c 0%, #293d7c 100%);
+  color: white;
+  border: none;
+}
+
+.styled-selector-card .selector-label {
+  color: white;
+}
+
+.styled-selector-card .selector-dropdown {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.styled-selector-card .selector-dropdown:focus {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.styled-selector-card .selector-dropdown:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.styled-selector-card .selector-dropdown option {
+    background-color: #16285c;
+    color: white;
+}
+
+
+/* Selector de vista (base) */
+.selector-card {
+  margin-bottom: 30px;
+}
+
+.selector-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.selector-row {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.selector-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.selector-label {
+  font-weight: 600;
+  color: white;
+  font-size: 1rem;
+}
+
+.selector-dropdown {
+  padding: 10px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+  backdrop-filter: blur(10px);
+}
+
+.selector-dropdown:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.selector-dropdown:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.info-card {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrar el contenido */
+    padding: 24px;
+    background: linear-gradient(135deg, #16285c 0%, #293d7c 100%);
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.info-card-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.info-card-icon {
+    width: 40px;
+    height: 40px;
+    opacity: 0.9;
+}
+
+.info-card-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.info-card-number {
+    font-size: 2.25rem; /* Ligeramente más pequeño que el total general */
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+/* Gráficos */
+.chart-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.chart-container {
+  width: 100%;
+  height: 400px;
+}
+
+/* Tablas */
+.table-container {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background-color: white;
+  border: none;
+  border-radius: 12px;
+}
+
+.table-header {
+  background: #F9FAFB;
+}
+
+.table-header th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 700;
+  color: #16285c;
+  border-bottom: 2px solid #E5E7EB;
+}
+
+.table-body tr {
+  transition: all 0.3s ease;
+}
+
+.table-body tr:hover {
+  background: linear-gradient(90deg, rgba(223,94,30,0.2), rgba(95,166,90,0.2));
+  transform: translateX(5px);
+  box-shadow: 5px 0 15px rgba(223,94,30,0.3);
+}
+
+.table-body tr:nth-child(even) {
+  background-color: #FAFAFA;
+}
+
+.table-cell-primary {
+  padding: 14px 20px;
+  font-weight: 600;
+  color: #111827;
+  border-bottom: 1px solid #E5E7EB;
+  
+}
+
+.table-cell-secondary {
+  padding: 14px 20px;
+  color: #6B7280;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.table-cell-number {
+  position: relative;
+  overflow: hidden;
+}
+
+.table-cell-number::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(223,94,30,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.table-body tr:hover .table-cell-number::after {
+  left: 100%;
+}
+
+/* Grid */
+.grid {
+  display: grid;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.gap-6 {
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .lg\\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Estados vacíos */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.empty-state-text {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Utilidades de espaciado */
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mt-8 {
+  margin-top: 32px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.mb-6 {
+  margin-bottom: 24px;
+}
+
+/* Utilidades flexbox */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+/* Utilidades de color */
+.text-center {
+  text-align: center;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+/* Utilidades de padding */
+.p-4 {
+  padding: 16px;
+}
+
+.p-8 {
+  padding: 32px;
+}
+
+/* Utilidades de border radius */
+.rounded-lg {
+  border-radius: 8px;
+}
+
+/* Utilidades de shadow */
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Colores de fondo */
+.bg-white {
+  background-color: white;
+}
+
+.bg-red-50 {
+  background-color: #FEF2F2;
+}
+
+.bg-red-500 {
+  background-color: #EF4444;
+}
+
+.bg-red-600 {
+  background-color: #DC2626;
+}
+
+/* Colores de texto */
+.text-gray-400 {
+  color: #9CA3AF;
+}
+
+.text-gray-600 {
+  color: #6B7280;
+}
+
+.text-red-500 {
+  color: #EF4444;
+}
+
+.text-red-600 {
+  color: #DC2626;
+}
+
+.text-red-700 {
+  color: #B91C1C;
+}
+
+.text-white {
+  color: white;
+}
+
+/* Utilidades de border */
+.border {
+  border-width: 1px;
+}
+
+.border-red-200 {
+  border-color: #FECACA;
+}
+
+/* Hover effects */
+.hover\\:bg-red-600:hover {
+  background-color: #DC2626;
+}
+
+/* Estilos para la sección de descarga de fichas (Verde) */
+.ficha-download-card {
+  background: linear-gradient(135deg, #5fa65a 0%, #4a884a 100%);
+  color: white;
+  border: none;
+  margin-bottom: .5rem;
+}
+
+.ficha-download-content {
+  padding: 1.5rem;
+}
+
+.ficha-download-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.ficha-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.ficha-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.ficha-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: white;
+}
+
+.ficha-description {
+  font-size: 0.875rem;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ficha-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dni-input-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dni-input-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+.dni-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.dni-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dni-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.btn-download {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #df5e1e;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.btn-download:hover:not(:disabled) {
+  background: #c3521b;
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-download:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-download:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.download-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.btn-download {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, #df5e1e, #ca551a);
+  box-shadow: 0 4px 15px rgba(223,94,30,0.4);
+}
+
+.btn-download::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.5s;
+}
+
+.btn-download:hover::before {
+  left: 100%;
+}
+
+.btn-download:hover:not(:disabled) {
+  box-shadow: 0 8px 25px rgba(223,94,30,0.6);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.error-message {
+  background: rgba(248, 113, 113, 0.2);
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  color: #fef2f2;
+}
+
+.success-message {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #f0fdf4;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design para la sección de fichas */
+@media (max-width: 768px) {
+  .ficha-download-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .dni-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .dni-input {
+    min-width: auto;
+  }
+  
+  .btn-download {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .dashboard-summary {
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .total-students-card,
+  .ficha-download-card {
+    flex: 1;
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 2rem;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .selector-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .total-students-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ficha-download-content {
+    padding: 1rem;
+  }
+  
+  .ficha-title {
+    font-size: 1.1rem;
+  }
+  
+.ficha-description {
+    font-size: 0.8rem;
+  }
+}
+/* Animaciones más dinámicas */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.2); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.4), 0 0 30px rgba(223,94,30,0.3); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Efectos para las tarjetas principales */
+.total-students-card {
+  background: linear-gradient(135deg, #df5e1e 0%, #ca551a 50%, #b8471a 100%);
+  animation: glow 3s infinite;
+}
+
+.total-students-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  animation: pulse 1s infinite;
+}
+
+.ficha-download-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* Efecto glassmorphism para cards */
+.gradient-card {
+  background: linear-gradient(135deg, rgba(45,67,128,0.9) 0%, rgba(22,40,92,0.9) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.gradient-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #df5e1e, #5fa65a, #16285c);
+  border-radius: 12px 12px 0 0;
+}
+
+.card {
+  position: relative;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+}

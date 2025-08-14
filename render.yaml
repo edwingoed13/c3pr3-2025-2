@@ -1,0 +1,30 @@
+services:
+  # Backend Service
+  - type: web
+    name: cepreuna-backend
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: CEPREUNA_EMAIL
+        fromDatabase: cepreuna_email # Usar Render Secrets
+      - key: CEPREUNA_PASSWORD
+        fromDatabase: cepreuna_pass # Usar Render Secrets
+    plan: free
+
+  # Frontend Service
+  - type: web
+    name: cepreuna-frontend
+    env: node
+    buildCommand: "npm ci && npm run build"
+    startCommand: "npm run serve"
+    envVars:
+      - key: NODE_VERSION
+        value: 18.17.0
+      - key: REACT_APP_API_URL
+        value: https://cepreuna-backend.onrender.com
+      - key: GENERATE_SOURCEMAP
+        value: false
+    plan: free
