@@ -9,9 +9,9 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: CEPREUNA_EMAIL
-        fromDatabase: cepreuna_email # Usar Render Secrets
+        fromDatabase: cepreuna_email
       - key: CEPREUNA_PASSWORD
-        fromDatabase: cepreuna_pass # Usar Render Secrets
+        fromDatabase: cepreuna_pass
     plan: free
 
   # Frontend Service
