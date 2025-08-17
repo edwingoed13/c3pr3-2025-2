@@ -502,6 +502,18 @@ async def health_check_alt():
     """Health check alternativo"""
     return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
+# HEAD para /api/health
+@app.head("/api/health")
+async def health_check_head():
+    """Respuesta vacía para UptimeRobot (HEAD)"""
+    return Response(status_code=200)
+
+# HEAD para /health
+@app.head("/health")
+async def health_check_alt_head():
+    """Respuesta vacía para UptimeRobot (HEAD)"""
+    return Response(status_code=200)
+
 @app.get("/api/estudiantes/estadisticas", response_model=EstudianteStats)
 async def get_student_statistics():
     """Obtener estadísticas de estudiantes con cache"""
