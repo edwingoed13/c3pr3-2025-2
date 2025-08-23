@@ -152,8 +152,8 @@ const AreaTable = ({ data: tableData, title }) => (
   </>
 );
 
-// Componente de tabla para mostrar datos de turnos
-const TurnoTable = ({ data: tableData, title }) => (
+// Componente de tabla mejorado para mostrar datos de turnos con vacantes
+const TurnoTableWithVacantes = ({ data: tableData, title }) => (
   <>
     <h3 className="chart-title mb-6">{title}</h3>
     <div className="table-container">
@@ -162,25 +162,49 @@ const TurnoTable = ({ data: tableData, title }) => (
           <tr>
             <th>Área</th>
             <th>Turno</th>
-            <th>Total</th>
+            <th>Inscritos</th>
+            <th>Vacantes Totales</th>
+            <th>Vacantes Restantes</th>
+            <th>% Ocupación</th>
           </tr>
         </thead>
         <tbody className="table-body">
-          {tableData.map((row, index) => (
-            <tr key={index}>
-              <td className="table-cell-primary">{row.area}</td>
-              <td className="table-cell-secondary">{row.turno}</td>
-              <td className="table-cell-number">{row.total}</td>
-            </tr>
-          ))}
+          {tableData.map((row, index) => {
+            const ocupacion = row.vacantesTotales > 0 
+              ? ((row.total / row.vacantesTotales) * 100).toFixed(1) 
+              : 0;
+            const isHighOccupancy = ocupacion > 80;
+            const isMediumOccupancy = ocupacion > 50 && ocupacion <= 80;
+            
+            return (
+              <tr key={index}>
+                <td className="table-cell-primary">{row.area}</td>
+                <td className="table-cell-secondary">{row.turno}</td>
+                <td className="table-cell-number">{row.total}</td>
+                <td className="table-cell-number">{row.vacantesTotales || 'N/A'}</td>
+                <td className={`table-cell-number ${
+                  row.vacantesRestantes <= 0 ? 'text-red-400' : 
+                  row.vacantesRestantes <= 50 ? 'text-yellow-400' : 'text-green-400'
+                }`}>
+                  {row.vacantesRestantes !== undefined ? row.vacantesRestantes : 'N/A'}
+                </td>
+                <td className={`table-cell-number ${
+                  isHighOccupancy ? 'text-red-400' :
+                  isMediumOccupancy ? 'text-yellow-400' : 'text-green-400'
+                }`}>
+                  {ocupacion}%
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
   </>
 );
 
-// Nuevo componente de tabla para mostrar totales por sede
-const SedeTable = ({ data: tableData, title }) => (
+// Componente de tabla para mostrar totales por sede con vacantes
+const SedeTableWithVacantes = ({ data: tableData, title }) => (
   <>
     <h3 className="chart-title mb-6">{title}</h3>
     <div className="table-container">
@@ -188,16 +212,40 @@ const SedeTable = ({ data: tableData, title }) => (
         <thead className="table-header">
           <tr>
             <th>Sede</th>
-            <th>Total</th>
+            <th>Inscritos</th>
+            <th>Vacantes Totales</th>
+            <th>Vacantes Restantes</th>
+            <th>% Ocupación</th>
           </tr>
         </thead>
         <tbody className="table-body">
-          {tableData.map((row, index) => (
-            <tr key={index}>
-              <td className="table-cell-primary">{row.sede}</td>
-              <td className="table-cell-number">{row.total}</td>
-            </tr>
-          ))}
+          {tableData.map((row, index) => {
+            const ocupacion = row.vacantesTotales > 0 
+              ? ((row.total / row.vacantesTotales) * 100).toFixed(1) 
+              : 0;
+            const isHighOccupancy = ocupacion > 80;
+            const isMediumOccupancy = ocupacion > 50 && ocupacion <= 80;
+            
+            return (
+              <tr key={index}>
+                <td className="table-cell-primary">{row.sede}</td>
+                <td className="table-cell-number">{row.total}</td>
+                <td className="table-cell-number">{row.vacantesTotales || 'N/A'}</td>
+                <td className={`table-cell-number ${
+                  row.vacantesRestantes <= 0 ? 'text-red-400' : 
+                  row.vacantesRestantes <= 100 ? 'text-yellow-400' : 'text-green-400'
+                }`}>
+                  {row.vacantesRestantes !== undefined ? row.vacantesRestantes : 'N/A'}
+                </td>
+                <td className={`table-cell-number ${
+                  isHighOccupancy ? 'text-red-400' :
+                  isMediumOccupancy ? 'text-yellow-400' : 'text-green-400'
+                }`}>
+                  {ocupacion}%
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -214,6 +262,7 @@ const StudentDashboard = () => {
       : "http://localhost:8000");
 
   const [data, setData] = useState(null);
+  const [vacantesData, setVacantesData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
@@ -231,20 +280,30 @@ const StudentDashboard = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/estudiantes/estadisticas`
-      );
+      // Fetch estudiantes y vacantes en paralelo
+      const [estudiantesResponse, vacantesResponse] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/estudiantes/estadisticas`),
+        fetch(`${API_BASE_URL}/api/vacantes/estadisticas`)
+      ]);
 
-      if (!response.ok) {
-        const errorData = await response
+      if (!estudiantesResponse.ok) {
+        const errorData = await estudiantesResponse
           .json()
-          .catch(() => ({ detail: `Error del servidor: ${response.status}` }));
+          .catch(() => ({ detail: `Error del servidor: ${estudiantesResponse.status}` }));
         throw new Error(
-          errorData.detail || "Ocurrió un error al cargar los datos."
+          errorData.detail || "Ocurrió un error al cargar los datos de estudiantes."
         );
       }
 
-      const result = await response.json();
+      if (!vacantesResponse.ok) {
+        console.warn("No se pudieron obtener las vacantes, continuando sin ellas");
+        setVacantesData(null);
+      } else {
+        const vacantesResult = await vacantesResponse.json();
+        setVacantesData(vacantesResult);
+      }
+
+      const result = await estudiantesResponse.json();
 
       if (!result || typeof result !== "object") {
         throw new Error("Datos inválidos recibidos de la API");
@@ -323,7 +382,7 @@ const StudentDashboard = () => {
     } finally {
       setDownloadLoading(false);
     }
-  }, [dni, setDownloadError, setDownloadSuccess, API_BASE_URL]); // Dependencias del useCallback
+  }, [dni, setDownloadError, setDownloadSuccess, API_BASE_URL]);
 
   useEffect(() => {
     if (downloadSuccess || downloadError) {
@@ -334,6 +393,17 @@ const StudentDashboard = () => {
       return () => clearTimeout(timer);
     }
   }, [downloadSuccess, downloadError]);
+
+  // Función para obtener vacantes por sede, área y turno
+  const getVacantes = (sede, area, turno) => {
+    if (!vacantesData || !vacantesData.detalle_completo) return null;
+    
+    try {
+      return vacantesData.detalle_completo[area]?.[sede]?.[turno] || null;
+    } catch (e) {
+      return null;
+    }
+  };
 
   // Funciones para preparar los datos para la visualización
   const getAvailableSedes = () => {
@@ -352,10 +422,23 @@ const StudentDashboard = () => {
 
   const prepareSedeTotalsData = () => {
     if (!data || !data.por_sede) return [];
-    return Object.entries(data.por_sede).map(([sede, total]) => ({
-      sede,
-      total,
-    }));
+    
+    return Object.entries(data.por_sede).map(([sede, total]) => {
+      // Calcular vacantes totales para la sede
+      let vacantesTotales = 0;
+      if (vacantesData && vacantesData.por_sede) {
+        vacantesTotales = vacantesData.por_sede[sede] || 0;
+      }
+      
+      const vacantesRestantes = Math.max(0, vacantesTotales - total);
+      
+      return {
+        sede,
+        total,
+        vacantesTotales,
+        vacantesRestantes,
+      };
+    });
   };
 
   const prepareSedeAreaData = (sede) => {
@@ -373,19 +456,49 @@ const StudentDashboard = () => {
     return result.sort((a, b) => b.total - a.total);
   };
 
-  const prepareTurnoData = (sede) => {
+  const prepareTurnoDataWithVacantes = (sede) => {
     if (!data || !data.detalle_completo) return [];
     const result = [];
+    
     Object.entries(data.detalle_completo).forEach(([area, sedes]) => {
       if (sedes[sede]) {
         Object.entries(sedes[sede]).forEach(([turno, total]) => {
-          if (total > 0) result.push({ area, turno, total });
+          if (total > 0) {
+            const vacantesTotales = getVacantes(sede, area, turno);
+            const vacantesRestantes = vacantesTotales ? Math.max(0, vacantesTotales - total) : undefined;
+            
+            result.push({ 
+              area, 
+              turno, 
+              total,
+              vacantesTotales,
+              vacantesRestantes
+            });
+          }
         });
       }
     });
+    
     return result.sort(
       (a, b) => a.area.localeCompare(b.area) || a.turno.localeCompare(b.turno)
     );
+  };
+
+  // Función para calcular estadísticas de vacantes globales
+  const getVacantesGlobales = () => {
+    if (!data || !vacantesData) return null;
+    
+    const totalInscritos = data.total || 0;
+    const totalVacantes = vacantesData.total || 0;
+    const vacantesRestantes = Math.max(0, totalVacantes - totalInscritos);
+    const porcentajeOcupacion = totalVacantes > 0 ? ((totalInscritos / totalVacantes) * 100).toFixed(1) : 0;
+    
+    return {
+      totalInscritos,
+      totalVacantes,
+      vacantesRestantes,
+      porcentajeOcupacion
+    };
   };
 
   // Paleta de colores para el gráfico de barras
@@ -503,8 +616,9 @@ const StudentDashboard = () => {
           </div>
         </div>
 
-        {/* Nuevo contenedor para las dos tarjetas de resumen */}
+        {/* Contenedor mejorado para las tarjetas de resumen */}
         <div className="dashboard-summary">
+          {/* Tarjeta de estudiantes */}
           <div className="card total-students-card animate-slide-in-right">
             <div className="total-students-content">
               <Users className="total-students-icon" />
@@ -610,10 +724,17 @@ const StudentDashboard = () => {
 
         {selectedView === "por_sede_resumen" && (
           <div className="card gradient-card">
-            <SedeTable
-              data={prepareSedeTotalsData()}
-              title="Total de Estudiantes por Sede"
-            />
+            {vacantesData ? (
+              <SedeTableWithVacantes
+                data={prepareSedeTotalsData()}
+                title="Total de Estudiantes y Vacantes por Sede"
+              />
+            ) : (
+              <AreaTable
+                data={prepareSedeTotalsData()}
+                title="Total de Estudiantes por Sede"
+              />
+            )}
           </div>
         )}
 
@@ -626,9 +747,9 @@ const StudentDashboard = () => {
               />
             </div>
             <div className="card gradient-card">
-              <TurnoTable
-                data={prepareTurnoData(selectedSede)}
-                title={`Estudiantes por Área y Turno - ${selectedSede}`}
+              <TurnoTableWithVacantes
+                data={prepareTurnoDataWithVacantes(selectedSede)}
+                title={`Detalle por Área y Turno - ${selectedSede}`}
               />
             </div>
           </div>
@@ -639,6 +760,15 @@ const StudentDashboard = () => {
             <MapPin className="h-12 w-12 text-gray-200 mx-auto mb-4" />
             <p className="empty-state-text text-white">
               Selecciona una sede para ver los datos detallados
+            </p>
+          </div>
+        )}
+
+        {/* Mensaje informativo sobre vacantes */}
+        {!vacantesData && (
+          <div className="mt-4 bg-yellow-800 border border-yellow-600 rounded-lg p-4">
+            <p className="text-yellow-200 text-sm">
+              ℹ️ Los datos de vacantes no están disponibles. Solo se muestran los estudiantes inscritos.
             </p>
           </div>
         )}
